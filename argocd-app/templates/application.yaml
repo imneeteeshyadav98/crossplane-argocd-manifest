@@ -25,20 +25,17 @@ spec:
     {{- else }}
     {{- fail "Provide apps[].path (monorepo) or apps[].chart (repo chart)" }}
     {{- end }}
-    {{- /* Build a list of value files: prefer apps[].valuesFiles, then apps[].valuesFile, then defaults.defaultValuesFile */ -}}
-    {{- $hv := dict "files" (list) -}}
-    {{- if $app.valuesFiles }}
-      {{- $_ := set $hv "files" $app.valuesFiles -}}
-    {{- else if $app.valuesFile }}
-      {{- $_ := set $hv "files" (list $app.valuesFile) -}}
-    {{- else if $d.defaultValuesFile }}
-      {{- $_ := set $hv "files" (list $d.defaultValuesFile) -}}
-    {{- end }}
-    {{- with $hv.files }}
     helm:
+      releaseName: {{ default $app.name $app.releaseName | quote }}
+      {{- /* Build a list: prefer apps[].valuesFiles, then apps[].valuesFile, then defaults.defaultValuesFile */ -}}
+      {{- $files := list -}}
+      {{- if $app.valuesFiles }}{{- $files = $app.valuesFiles -}}{{- end -}}
+      {{- if and (not $app.valuesFiles) $app.valuesFile }}{{- $files = list $app.valuesFile -}}{{- end -}}
+      {{- if and (eq (len $files) 0) $d.defaultValuesFile }}{{- $files = list $d.defaultValuesFile -}}{{- end -}}
+      {{- if gt (len $files) 0 }}
       valueFiles:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- toYaml $files | nindent 6 }}
+      {{- end }}
   destination:
     server: {{ $d.destinationServer | default "https://kubernetes.default.svc" | quote }}
     namespace: {{ required "apps[].namespace (destination) is required" $app.namespace | quote }}
