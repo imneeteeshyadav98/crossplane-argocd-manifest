@@ -1,24 +1,3 @@
-kyverno:
-  enabled: false
-  rbac:
-    clusterRoleName: kyverno-crossplane-rdsinstance-access
-    clusterRoleBindingName: kyverno-crossplane-rdsinstance-access-binding
-    saName: kyverno-reports-controller
-    saNamespace: kyverno
-
-  policy:
-    name: disallow-public-rds
-    validationFailureAction: Enforce  # or Audit
-    # Use a deny rule by default (correctly blocks bad settings).
-    useDenyRule: true
-
-    # If you set useDenyRule: false, we’ll render a validate.pattern rule.
-    # NOTE: pattern below enforces SAFE values (publiclyAccessible: false & deletionProtection: true).
-    # If you want to exactly reproduce your pasted (inverted) pattern, flip these booleans.
-    pattern:
-      publiclyAccessible: false
-      deletionProtection: true
-
 rds:
   enabled: true
   name: example-rds-test-01

@@ -2,8 +2,9 @@
 apiVersion: database.aws.crossplane.io/v1beta1
 kind: RDSInstance
 metadata:
-  name: {{ .Values.rds.name }}
-  namespace: {{ .Values.rds.namespace | default .Release.Namespace }}
+  name: {{ default .Release.Name .Values.rds.name }}
+  namespace: {{ default .Release.Namespace .Values.rds.namespace }}
+
 spec:
   forProvider:
     allocatedStorage: {{ .Values.rds.forProvider.allocatedStorage }}
