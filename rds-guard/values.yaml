@@ -1,8 +1,3 @@
-providerAws:
-  enabled: true
-  name: provider-aws
-  package: xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2
-
 kyverno:
   enabled: false
   rbac:
@@ -25,7 +20,7 @@ kyverno:
       deletionProtection: true
 
 rds:
-  enabled: false
+  enabled: true
   name: example-rds-test-01
   providerConfigRefName: aws
   forProvider:
