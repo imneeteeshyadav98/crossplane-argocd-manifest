@@ -1,6 +1,7 @@
 rds:
   enabled: true
   name: example-rds-test-01
+  namespace: crossplane-system
   providerConfigRefName: aws
   forProvider:
     allocatedStorage: 20
