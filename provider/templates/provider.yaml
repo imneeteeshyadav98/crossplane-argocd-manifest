@@ -4,6 +4,7 @@ apiVersion: pkg.crossplane.io/v1alpha1
 kind: ControllerConfig
 metadata:
   name: {{ .Values.controllerConfig.name }}
+  namespace: {{ .Values.apps | first | .namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
@@ -25,6 +26,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: {{ .Values.provider.name }}
+  namespace: {{ .Values.apps | first | .namespace }}
   labels:
     app.kubernetes.io/name: provider-aws
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -44,6 +46,7 @@ apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: {{ .Values.providerConfig.name }}
+  namespace: {{ .Values.apps | first | .namespace }}
   annotations:
     # Ensure this applies after Provider (and after CRDs are present)
     argocd.argoproj.io/sync-wave: "1"

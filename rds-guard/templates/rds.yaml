@@ -1,9 +1,19 @@
 {{- if .Values.rds.enabled }}
+{{- /* Resolve namespace with sensible fallbacks */ -}}
+{{- $ns := default .Release.Namespace .Values.rds.namespace -}}
+{{- if .Values.apps }}
+  {{- range .Values.apps }}
+    {{- if eq .name $.Release.Name }}
+      {{- $ns = .namespace }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
 apiVersion: database.aws.crossplane.io/v1beta1
 kind: RDSInstance
 metadata:
   name: {{ default .Release.Name .Values.rds.name }}
-  namespace: {{ default .Release.Namespace .Values.rds.namespace }}
+  namespace: {{ $ns }}
   annotations:
     # Put RDS after ProviderConfig to avoid creds timing issues in Argo CD
     argocd.argoproj.io/sync-wave: "2"
