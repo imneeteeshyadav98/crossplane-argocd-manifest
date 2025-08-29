@@ -1,7 +1,8 @@
 rds:
   enabled: true
-  name: example-rds-test-01
-  namespace: crossplane-system
+  # name/namespace are optional; if omitted, template will use .Release.Name / .Release.Namespace from Argo CD.
+  # name: example-rds-test-01
+  # namespace: crossplane-system
   providerConfigRefName: aws
   forProvider:
     allocatedStorage: 20
@@ -9,14 +10,14 @@ rds:
     backupRetentionPeriod: 0
     caCertificateIdentifier: rds-ca-rsa2048-g1
     dbInstanceClass: db.r5.large
-    deletionProtection: false        # <- deliberately unsafe (to test the policy)
+    deletionProtection: false        # deliberately unsafe (to test policy)
     enableIAMDatabaseAuthentication: false
     engine: mysql
     engineVersion: "8.0.42"
     masterUsername: admin
     multiAZ: true
     port: 3306
-    publiclyAccessible: true         # <- deliberately unsafe (to test the policy)
+    publiclyAccessible: true         # deliberately unsafe (to test policy)
     region: us-east-1
     storageEncrypted: false
     storageType: gp2

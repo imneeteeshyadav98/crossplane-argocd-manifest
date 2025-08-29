@@ -4,7 +4,9 @@ kind: RDSInstance
 metadata:
   name: {{ default .Release.Name .Values.rds.name }}
   namespace: {{ default .Release.Namespace .Values.rds.namespace }}
-
+  annotations:
+    # Put RDS after ProviderConfig to avoid creds timing issues in Argo CD
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   forProvider:
     allocatedStorage: {{ .Values.rds.forProvider.allocatedStorage }}
@@ -24,5 +26,5 @@ spec:
     storageEncrypted: {{ .Values.rds.forProvider.storageEncrypted }}
     storageType: {{ .Values.rds.forProvider.storageType }}
   providerConfigRef:
-    name: {{ .Values.rds.providerConfigRefName }}
+    name: {{ .Values.rds.providerConfigRefName | default "aws" }}
 {{- end }}

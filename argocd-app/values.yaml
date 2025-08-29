@@ -16,4 +16,4 @@ apps:
   - name: rds-guard
     path: "rds-guard"
     valuesFile: "values.yaml"
-    namespace: "default"
+    namespace: "crossplane-system"
