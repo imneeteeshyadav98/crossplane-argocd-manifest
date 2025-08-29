@@ -1,6 +1,6 @@
 {{- /*
 Minimal Argo CD Application generator.
-Per-app you only set: name, chart/path, valuesFile(s), destination.namespace.
+Per app you only set: name, chart/path, valuesFile(s), destination.namespace.
 Everything else comes from .Values.defaults.
 */ -}}
 {{- $d := .Values.defaults -}}
@@ -18,7 +18,6 @@ spec:
   source:
     repoURL: {{ $d.repoURL | quote }}
     targetRevision: {{ $d.targetRevision | default "main" | quote }}
-    {{- /* Either local chart path OR chart from repo */}}
     {{- if $app.path }}
     path: {{ $app.path | quote }}
     {{- else if $app.chart }}
@@ -26,16 +25,20 @@ spec:
     {{- else }}
     {{- fail "Provide apps[].path (monorepo) or apps[].chart (repo chart)" }}
     {{- end }}
+    {{- /* Build a list of value files: prefer apps[].valuesFiles, then apps[].valuesFile, then defaults.defaultValuesFile */ -}}
+    {{- $hv := dict "files" (list) -}}
+    {{- if $app.valuesFiles }}
+      {{- $_ := set $hv "files" $app.valuesFiles -}}
+    {{- else if $app.valuesFile }}
+      {{- $_ := set $hv "files" (list $app.valuesFile) -}}
+    {{- else if $d.defaultValuesFile }}
+      {{- $_ := set $hv "files" (list $d.defaultValuesFile) -}}
+    {{- end }}
+    {{- with $hv.files }}
     helm:
-      {{- /* Support string or list for valuesFile(s) */}}
-      {{- $v := (cond (kindIs "string" $app.valuesFile) (list $app.valuesFile) ($app.valuesFiles | default list)) -}}
-      {{- if $v }}
       valueFiles:
-{{ toYaml $v | indent 8 }}
-      {{- else if $d.defaultValuesFile }}
-      valueFiles:
-        - {{ $d.defaultValuesFile | quote }}
-      {{- end }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   destination:
     server: {{ $d.destinationServer | default "https://kubernetes.default.svc" | quote }}
     namespace: {{ required "apps[].namespace (destination) is required" $app.namespace | quote }}

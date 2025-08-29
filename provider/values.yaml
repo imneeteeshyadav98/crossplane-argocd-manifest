@@ -1,21 +1,15 @@
-# Provider resource
 provider:
   enabled: true
   name: provider-aws
-  # Pin the version you want to run
   package: "xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2"
-
-# Optional: tie the provider to a ControllerConfig (nodeSelector/tolerations/env, etc.)
 controllerConfig:
   enabled: false
   name: aws-controller
   spec:
-    args: []         # e.g., ["--poll=1m"]
+    args: []
     nodeSelector: {}
     tolerations: []
-    env: []          # e.g., [{ name: AWS_REGION, value: ap-south-1 }]
-
-# Optional: create a ProviderConfig with credentials (disable if you manage this elsewhere)
+    env: []
 providerConfig:
   enabled: true
   name: aws
