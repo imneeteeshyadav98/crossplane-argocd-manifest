@@ -1,0 +1,48 @@
+{{- /*
+Minimal Argo CD Application generator.
+Per-app you only set: name, chart/path, valuesFile(s), destination.namespace.
+Everything else comes from .Values.defaults.
+*/ -}}
+{{- $d := .Values.defaults -}}
+{{- range $i, $app := .Values.apps }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ required "apps[].name is required" $app.name | trunc 63 | trimSuffix "-" }}
+  namespace: {{ $d.appNamespace | default "argocd" }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+spec:
+  project: {{ $d.project | default "default" }}
+  source:
+    repoURL: {{ $d.repoURL | quote }}
+    targetRevision: {{ $d.targetRevision | default "main" | quote }}
+    {{- /* Either local chart path OR chart from repo */}}
+    {{- if $app.path }}
+    path: {{ $app.path | quote }}
+    {{- else if $app.chart }}
+    chart: {{ $app.chart | quote }}
+    {{- else }}
+    {{- fail "Provide apps[].path (monorepo) or apps[].chart (repo chart)" }}
+    {{- end }}
+    helm:
+      {{- /* Support string or list for valuesFile(s) */}}
+      {{- $v := (cond (kindIs "string" $app.valuesFile) (list $app.valuesFile) ($app.valuesFiles | default list)) -}}
+      {{- if $v }}
+      valueFiles:
+{{ toYaml $v | indent 8 }}
+      {{- else if $d.defaultValuesFile }}
+      valueFiles:
+        - {{ $d.defaultValuesFile | quote }}
+      {{- end }}
+  destination:
+    server: {{ $d.destinationServer | default "https://kubernetes.default.svc" | quote }}
+    namespace: {{ required "apps[].namespace (destination) is required" $app.namespace | quote }}
+  syncPolicy:
+    automated: {}
+    prune: true
+    selfHeal: true
+  revisionHistoryLimit: {{ $d.revisionHistoryLimit | default 5 }}
+---
+{{- end }}

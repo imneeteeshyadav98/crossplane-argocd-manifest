@@ -1,0 +1,23 @@
+defaults:
+  # stays same for all apps so you don't manage per-app
+  repoURL: "https://github.com/imneeteeshyadav98/crossplane-argocd-manifest.git"   # <--- change once
+  targetRevision: "master"
+  appNamespace: "argocd"                                 # where Application CRs live
+  project: "default"
+  destinationServer: "https://kubernetes.default.svc"
+  revisionHistoryLimit: 5
+  # optional default values file if an app doesn't specify one:
+  # defaultValuesFile: "values.yaml"
+
+apps:
+  # provider app – only name, chart/path, values file, dest namespace
+  - name: provider-aws
+    path: "provider"                 # monorepo chart path (use 'chart' instead for repo charts)
+    valuesFile: "values.yaml"        # or omit to fall back to defaults.defaultValuesFile
+    namespace: "crossplane-system"   # destination namespace
+
+  # rds-guard app
+  # - name: rds-guard
+  #   path: "rds-guard"
+  #   valuesFile: "values.yaml"
+  #   namespace: "default"

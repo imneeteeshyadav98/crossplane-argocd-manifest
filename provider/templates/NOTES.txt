@@ -1,0 +1,23 @@
+Thanks for installing provider-aws!
+
+This chart installs ONLY:
+- Crossplane Provider (pkg.crossplane.io/v1, kind: Provider)
+- Optional ControllerConfig (if enabled)
+- Optional ProviderConfig (if enabled)
+
+Prereqs:
+- Crossplane must already be installed in the cluster.
+
+If you enabled ProviderConfig, ensure a Secret exists:
+  kubectl -n crossplane-system create secret generic aws-creds \
+    --from-file=creds=./aws-credentials.json
+
+Where aws-credentials.json is typically:
+{
+  "credentials": "aws_access_key_id=...;aws_secret_access_key=...;aws_session_token=..."
+}
+or the format expected by your chosen auth method.
+
+To verify:
+  kubectl get provider.pkg
+  kubectl get providerrevision.pkg

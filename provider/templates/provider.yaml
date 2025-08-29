@@ -1,0 +1,50 @@
+{{- if .Values.provider.enabled }}
+{{- if .Values.controllerConfig.enabled }}
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: {{ .Values.controllerConfig.name }}
+spec:
+  {{- with .Values.controllerConfig.spec.args }}
+  args: {{ toJson . }}
+  {{- end }}
+  {{- with .Values.controllerConfig.spec.nodeSelector }}
+  nodeSelector: {{ toJson . }}
+  {{- end }}
+  {{- with .Values.controllerConfig.spec.tolerations }}
+  tolerations: {{ toJson . }}
+  {{- end }}
+  {{- with .Values.controllerConfig.spec.env }}
+  env: {{ toJson . }}
+  {{- end }}
+---
+{{- end }}
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: {{ .Values.provider.name }}
+  labels:
+    app.kubernetes.io/name: provider-aws
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  package: {{ .Values.provider.package | quote }}
+  {{- if .Values.controllerConfig.enabled }}
+  controllerConfigRef:
+    name: {{ .Values.controllerConfig.name }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.providerConfig.enabled }}
+---
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: {{ .Values.providerConfig.name }}
+spec:
+  credentials:
+    source: {{ .Values.providerConfig.credentials.source }}
+    secretRef:
+      name: {{ .Values.providerConfig.credentials.secretRef.name }}
+      namespace: {{ .Values.providerConfig.credentials.secretRef.namespace }}
+      key: {{ .Values.providerConfig.credentials.secretRef.key }}
+{{- end }}
