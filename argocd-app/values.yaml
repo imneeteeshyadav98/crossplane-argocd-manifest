@@ -12,10 +12,13 @@ apps:
     path: "provider"
     valuesFile: "values.yaml"
     namespace: "crossplane-system"
-
-  # - name: rds-guard
-  #   path: "rds-guard"
-  #   valuesFile: "values.yaml"
-  #   namespace: "crossplane-system"
+  - name: providerconfig-aws 
+    path: "crossplane-aws-providerconfig"
+    valuesFile: "values.yaml"
+    namespace: "crossplane-system"
+  - name: rds-guard
+    path: "rds-guard"
+    valuesFile: "values.yaml"
+    namespace: "crossplane-system"
 
     
