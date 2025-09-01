@@ -1,6 +1,6 @@
 apiVersion: v2
 name: provider-aws
-description: Helm chart to install Crossplane Upbound provider-aws only
+description: Helm chart to install Crossplane provider-aws (and optional ControllerConfig & ProviderConfig)
 type: application
 version: 0.1.0
 appVersion: "0.1.0"

@@ -8,14 +8,14 @@ defaults:
   # defaultValuesFile: "values.yaml"   # optional global fallback
 
 apps:
-  - name: provider-aws
-    path: "provider"
-    valuesFile: "values.yaml"
-    namespace: "crossplane-system"
+  # - name: provider-aws
+  #   path: "provider"
+  #   valuesFile: "values.yaml"
+  #   namespace: "crossplane-system"
 
-  - name: rds-guard
-    path: "rds-guard"
-    valuesFile: "values.yaml"
-    namespace: "crossplane-system"
+  # - name: rds-guard
+  #   path: "rds-guard"
+  #   valuesFile: "values.yaml"
+  #   namespace: "crossplane-system"
 
     

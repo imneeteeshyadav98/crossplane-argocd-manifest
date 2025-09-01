@@ -1,62 +1,9 @@
-{{- if .Values.provider.enabled }}
-{{- if .Values.controllerConfig.enabled }}
-apiVersion: pkg.crossplane.io/v1alpha1
-kind: ControllerConfig
-metadata:
-  name: {{ .Values.controllerConfig.name }}
-  namespace: {{ .Values.apps | first | .namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-spec:
-  {{- with .Values.controllerConfig.spec.args }}
-  args: {{ toJson . }}
-  {{- end }}
-  {{- with .Values.controllerConfig.spec.nodeSelector }}
-  nodeSelector: {{ toJson . }}
-  {{- end }}
-  {{- with .Values.controllerConfig.spec.tolerations }}
-  tolerations: {{ toJson . }}
-  {{- end }}
-  {{- with .Values.controllerConfig.spec.env }}
-  env: {{ toJson . }}
-  {{- end }}
----
-{{- end }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: {{ .Values.provider.name }}
-  namespace: {{ .Values.apps | first | .namespace }}
-  labels:
-    app.kubernetes.io/name: provider-aws
-    app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
+    # Ensure Provider applies before ProviderConfig in Argo CD
     argocd.argoproj.io/sync-wave: "0"
 spec:
   package: {{ .Values.provider.package | quote }}
-  {{- if .Values.controllerConfig.enabled }}
-  controllerConfigRef:
-    name: {{ .Values.controllerConfig.name }}
-  {{- end }}
-{{- end }}
-
-{{- if .Values.providerConfig.enabled }}
----
-apiVersion: aws.crossplane.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: {{ .Values.providerConfig.name }}
-  namespace: {{ .Values.apps | first | .namespace }}
-  annotations:
-    # Ensure this applies after Provider (and after CRDs are present)
-    argocd.argoproj.io/sync-wave: "1"
-    # Avoid Argo's pre-apply dry-run failure while CRD isn't installed yet
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-spec:
-  credentials:
-    source: {{ .Values.providerConfig.credentials.source }}
-    secretRef:
-      name: {{ .Values.providerConfig.credentials.secretRef.name }}
-      namespace: {{ .Values.providerConfig.credentials.secretRef.namespace }}
-      key: {{ .Values.providerConfig.credentials.secretRef.key }}
-{{- end }}

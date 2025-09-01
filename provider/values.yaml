@@ -1,21 +1,18 @@
+# Optional: set once, auto-applies to secretRef.namespace.
+# If omitted, it will default to the Argo CD Application's destination.namespace
+# (i.e., .Release.Namespace in Helm).
+global:
+  targetNamespace: ""
+
 provider:
-  enabled: true
   name: provider-aws
-  package: "xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2"
-controllerConfig:
-  enabled: false
-  name: aws-controller
-  spec:
-    args: []
-    nodeSelector: {}
-    tolerations: []
-    env: []
+  package: xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2
+
 providerConfig:
-  enabled: true
   name: aws
   credentials:
-    source: Secret
-    secretRef:
-      name: aws-creds
-      namespace: crossplane-system
-      key: creds
+    # If global.targetNamespace is set, it wins;
+    # else we’ll use .Release.Namespace (the Argo destination namespace).
+    secretNamespace: ""        # leave empty to auto-pick
+    secretName: aws-secret
+    secretKey: creds
