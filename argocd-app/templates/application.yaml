@@ -1,7 +1,5 @@
 {{- /*
 Minimal Argo CD Application generator.
-Per app you only set: name, chart/path, valuesFile(s), destination.namespace.
-Everything else comes from .Values.defaults.
 */ -}}
 {{- $d := .Values.defaults -}}
 {{- range $i, $app := .Values.apps }}
@@ -27,7 +25,8 @@ spec:
     {{- end }}
     helm:
       releaseName: {{ default $app.name $app.releaseName | quote }}
-      {{- /* Build a list: prefer apps[].valuesFiles, then apps[].valuesFile, then defaults.defaultValuesFile */ -}}
+
+      {{- /* valueFiles logic (unchanged) */ -}}
       {{- $files := list -}}
       {{- if $app.valuesFiles }}{{- $files = $app.valuesFiles -}}{{- end -}}
       {{- if and (not $app.valuesFiles) $app.valuesFile }}{{- $files = list $app.valuesFile -}}{{- end -}}
@@ -36,6 +35,13 @@ spec:
       valueFiles:
       {{- toYaml $files | nindent 6 }}
       {{- end }}
+
+      {{- /* NEW: inline values map per app */ -}}
+      {{- if $app.values }}
+      values: |
+        {{- toYaml $app.values | nindent 8 }}
+      {{- end }}
+
   destination:
     server: {{ $d.destinationServer | default "https://kubernetes.default.svc" | quote }}
     namespace: {{ required "apps[].namespace (destination) is required" $app.namespace | quote }}
