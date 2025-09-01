@@ -21,7 +21,7 @@ rds:
     storageType: gp2
 
 kyverno:
-  enabled: true
+  enabled: false
   policy:
     name: disallow-public-rds
     validationFailureAction: Enforce   # or Audit
