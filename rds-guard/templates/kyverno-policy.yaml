@@ -1,0 +1,23 @@
+{{- if .Values.kyverno.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: {{ default "disallow-public-rds" .Values.kyverno.policy.name }}
+spec:
+  validationFailureAction: {{ .Values.kyverno.policy.validationFailureAction | default "Enforce" }}
+  background: {{ .Values.kyverno.policy.background | default true }}
+  rules:
+    - name: validate-rds-security
+      match:
+        resources:
+          kinds:
+            - {{ .Values.kyverno.policy.apiVersion }}/{{ .Values.kyverno.policy.kind }}
+      validate:
+        message: {{ .Values.kyverno.policy.message | quote }}
+        # Require secure settings
+        pattern:
+          spec:
+            forProvider:
+              publiclyAccessible: false
+              deletionProtection: true
+{{- end }}

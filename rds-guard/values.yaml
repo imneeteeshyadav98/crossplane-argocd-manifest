@@ -1,8 +1,5 @@
 rds:
   enabled: true
-  # name/namespace are optional; if omitted, template will use .Release.Name / .Release.Namespace from Argo CD.
-  # name: example-rds-test-01
-  # namespace: crossplane-system
   providerConfigRefName: aws
   forProvider:
     allocatedStorage: 20
@@ -21,3 +18,31 @@ rds:
     region: us-east-1
     storageEncrypted: false
     storageType: gp2
+
+# NEW: Kyverno integration
+kyverno:
+  enabled: true
+
+  # RBAC so Kyverno background/reports controllers can list/watch Crossplane RDSInstances
+  rbac:
+    enabled: true
+    # Crossplane API group / resource names
+    apiGroups: ["database.aws.crossplane.io"]
+    resources: ["rdsinstances"]
+    verbs: ["get", "list", "watch"]
+    # service accounts that need read access for background scanning & reports
+    subjects:
+      - serviceAccountName: kyverno-background-controller
+        namespace: kyverno
+      - serviceAccountName: kyverno-reports-controller
+        namespace: kyverno
+
+  # ClusterPolicy that enforces "no public RDS" + "deletion protection on"
+  policy:
+    name: disallow-public-rds
+    validationFailureAction: Enforce  # or "Audit" for warn-only
+    background: true
+    message: "RDS must not be publicly accessible and must enable deletionProtection."
+    # Target kind (Crossplane)
+    apiVersion: database.aws.crossplane.io/v1beta1
+    kind: RDSInstance
