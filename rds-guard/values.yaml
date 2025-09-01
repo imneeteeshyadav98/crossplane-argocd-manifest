@@ -1,3 +1,4 @@
+# rds-guard/values.yaml
 rds:
   enabled: true
   providerConfigRefName: aws
@@ -7,42 +8,43 @@ rds:
     backupRetentionPeriod: 0
     caCertificateIdentifier: rds-ca-rsa2048-g1
     dbInstanceClass: db.r5.large
-    deletionProtection: false        # deliberately unsafe (to test policy)
+    deletionProtection: false
     enableIAMDatabaseAuthentication: false
     engine: mysql
     engineVersion: "8.0.42"
     masterUsername: admin
     multiAZ: true
     port: 3306
-    publiclyAccessible: true         # deliberately unsafe (to test policy)
+    publiclyAccessible: true
     region: us-east-1
     storageEncrypted: false
     storageType: gp2
 
-# NEW: Kyverno integration
 kyverno:
   enabled: true
-
-  # RBAC so Kyverno background/reports controllers can list/watch Crossplane RDSInstances
-  rbac:
-    enabled: true
-    # Crossplane API group / resource names
-    apiGroups: ["database.aws.crossplane.io"]
-    resources: ["rdsinstances"]
-    verbs: ["get", "list", "watch"]
-    # service accounts that need read access for background scanning & reports
-    subjects:
-      - serviceAccountName: kyverno-background-controller
-        namespace: kyverno
-      - serviceAccountName: kyverno-reports-controller
-        namespace: kyverno
-
-  # ClusterPolicy that enforces "no public RDS" + "deletion protection on"
   policy:
     name: disallow-public-rds
-    validationFailureAction: Enforce  # or "Audit" for warn-only
+    validationFailureAction: Enforce   # or Audit
     background: true
-    message: "RDS must not be publicly accessible and must enable deletionProtection."
-    # Target kind (Crossplane)
-    apiVersion: database.aws.crossplane.io/v1beta1
-    kind: RDSInstance
+    message: "prequirement not met:"   # your custom message
+
+    # match target kinds (full GVK string(s))
+    match:
+      kinds:
+        - database.aws.crossplane.io/v1beta1/RDSInstance
+    # EITHER supply `pattern:` (single map)...
+    pattern:
+      spec:
+        forProvider:
+          publiclyAccessible: false
+          deletionProtection: true
+
+    # ...OR supply `anyPattern:` (list of maps). If provided, it overrides `pattern`.
+    # anyPattern:
+    #   - spec:
+    #       forProvider:
+    #         publiclyAccessible: false
+    #         deletionProtection: true
+    #   - spec:
+    #       forProvider:
+    #         publiclyAccessible: "false"   # example showing string coercion variant

@@ -4,20 +4,29 @@ kind: ClusterPolicy
 metadata:
   name: {{ default "disallow-public-rds" .Values.kyverno.policy.name }}
 spec:
-  validationFailureAction: {{ .Values.kyverno.policy.validationFailureAction | default "Enforce" }}
-  background: {{ .Values.kyverno.policy.background | default true }}
+  validationFailureAction: {{ default "Enforce" .Values.kyverno.policy.validationFailureAction }}
+  background: {{ default true .Values.kyverno.policy.background }}
   rules:
-    - name: validate-rds-security
+    - name: {{ default "validate-rds" .Values.kyverno.policy.ruleName }}
       match:
         resources:
           kinds:
-            - {{ .Values.kyverno.policy.apiVersion }}/{{ .Values.kyverno.policy.kind }}
+          {{- range $k := (default (list "database.aws.crossplane.io/v1beta1/RDSInstance") .Values.kyverno.policy.match.kinds) }}
+            - {{ $k | quote }}
+          {{- end }}
       validate:
-        message: {{ .Values.kyverno.policy.message | quote }}
-        # Require secure settings
+        {{- with .Values.kyverno.policy.message }}
+        message: {{ . | quote }}
+        {{- end }}
+        {{- if .Values.kyverno.policy.anyPattern }}
+        anyPattern:
+{{ toYaml .Values.kyverno.policy.anyPattern | nindent 10 }}
+        {{- else if .Values.kyverno.policy.pattern }}
         pattern:
-          spec:
-            forProvider:
-              publiclyAccessible: false
-              deletionProtection: true
+{{ toYaml .Values.kyverno.policy.pattern | nindent 10 }}
+        {{- else }}
+        # default (sane) pattern if none supplied
+        pattern:
+{{ toYaml (dict "spec" (dict "forProvider" (dict "publiclyAccessible" false "deletionProtection" true))) | nindent 10 }}
+        {{- end }}
 {{- end }}
