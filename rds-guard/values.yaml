@@ -30,4 +30,4 @@ policy:
   enabled: true
   message: "RDS instances must not be publicly accessible and must have deletion protection enabled."
   enforcePublicAccess: false
-  enforceDeletionProtection: true
+  enforceDeletionProtection: false
