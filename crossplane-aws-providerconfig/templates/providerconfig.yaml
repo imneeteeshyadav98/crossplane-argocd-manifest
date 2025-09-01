@@ -1,0 +1,18 @@
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: {{ .Values.providerConfig.name }}
+  annotations:
+    {{- if .Values.providerConfig.annotations.syncWave }}
+    argocd.argoproj.io/sync-wave: {{ .Values.providerConfig.annotations.syncWave | quote }}
+    {{- end }}
+    {{- if .Values.providerConfig.skipDryRunOnMissingCRD }}
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    {{- end }}
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: {{ default (default .Release.Namespace .Values.global.targetNamespace) .Values.providerConfig.credentials.secretNamespace }}
+      name: {{ .Values.providerConfig.credentials.secretName }}
+      key: {{ .Values.providerConfig.credentials.secretKey }}
