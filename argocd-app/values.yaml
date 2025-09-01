@@ -20,10 +20,10 @@ apps:
     path: "rds-guard"
     valuesFile: "values.yaml"
     namespace: "crossplane-system"
-  - name: kyverno
-    path: "kyverno"
-    valuesFile: "values.yaml"
-    namespace: "kyverno"
+  # - name: kyverno
+  #   path: "kyverno"
+  #   valuesFile: "values.yaml"
+  #   namespace: "kyverno"
 
 
 

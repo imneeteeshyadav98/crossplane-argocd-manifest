@@ -1,6 +1,7 @@
 {{- if .Values.rds.enabled }}
 {{- /* Resolve namespace with sensible fallbacks */ -}}
 {{- $ns := default .Release.Namespace .Values.rds.namespace -}}
+
 {{- if .Values.apps }}
   {{- range .Values.apps }}
     {{- if eq .name $.Release.Name }}
@@ -22,19 +23,19 @@ spec:
     allocatedStorage: {{ .Values.rds.forProvider.allocatedStorage }}
     autoMinorVersionUpgrade: {{ .Values.rds.forProvider.autoMinorVersionUpgrade }}
     backupRetentionPeriod: {{ .Values.rds.forProvider.backupRetentionPeriod }}
-    caCertificateIdentifier: {{ .Values.rds.forProvider.caCertificateIdentifier }}
-    dbInstanceClass: {{ .Values.rds.forProvider.dbInstanceClass }}
+    caCertificateIdentifier: {{ .Values.rds.forProvider.caCertificateIdentifier | quote }}
+    dbInstanceClass: {{ .Values.rds.forProvider.dbInstanceClass | quote }}
     deletionProtection: {{ .Values.rds.forProvider.deletionProtection }}
     enableIAMDatabaseAuthentication: {{ .Values.rds.forProvider.enableIAMDatabaseAuthentication }}
-    engine: {{ .Values.rds.forProvider.engine }}
+    engine: {{ .Values.rds.forProvider.engine | quote }}
     engineVersion: {{ .Values.rds.forProvider.engineVersion | quote }}
-    masterUsername: {{ .Values.rds.forProvider.masterUsername }}
+    masterUsername: {{ .Values.rds.forProvider.masterUsername | quote }}
     multiAZ: {{ .Values.rds.forProvider.multiAZ }}
     port: {{ .Values.rds.forProvider.port }}
     publiclyAccessible: {{ .Values.rds.forProvider.publiclyAccessible }}
-    region: {{ .Values.rds.forProvider.region }}
+    region: {{ .Values.rds.forProvider.region | quote }}
     storageEncrypted: {{ .Values.rds.forProvider.storageEncrypted }}
-    storageType: {{ .Values.rds.forProvider.storageType }}
+    storageType: {{ .Values.rds.forProvider.storageType | quote }}
   providerConfigRef:
-    name: {{ .Values.rds.providerConfigRefName | default "aws" }}
+    name: {{ .Values.rds.providerConfigRefName | default "aws" | quote }}
 {{- end }}
