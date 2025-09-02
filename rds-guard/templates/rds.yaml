@@ -36,6 +36,6 @@ spec:
     region: {{ .Values.rds.forProvider.region | quote }}
     storageEncrypted: {{ .Values.rds.forProvider.storageEncrypted }}
     storageType: {{ .Values.rds.forProvider.storageType | quote }}
-  # providerConfigRef:
-  #   name: {{ .Values.rds.providerConfigRefName | default "aws" | quote }}
+  providerConfigRef:
+    name: {{ .Values.rds.providerConfigRefName | default "aws" | quote }}
 {{- end }}
