@@ -11,8 +11,10 @@ metadata:
     {{- end }}
 spec:
   credentials:
-    source: Secret
+    source: {{ .Values.providerConfig.credentials.source | default "Secret" }}
+    {{- if eq .Values.providerConfig.credentials.source "Secret" }}
     secretRef:
       namespace: {{ default (default .Release.Namespace .Values.global.targetNamespace) .Values.providerConfig.credentials.secretNamespace }}
       name: {{ .Values.providerConfig.credentials.secretName }}
       key: {{ .Values.providerConfig.credentials.secretKey }}
+    {{- end }}

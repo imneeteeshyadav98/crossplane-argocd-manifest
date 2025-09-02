@@ -46,3 +46,42 @@ spec:
               deletionProtection: true
               {{- end }}
 {{- end }}
+
+
+# {{- if .Values.policy.enabled }}
+# apiVersion: kyverno.io/v1
+# kind: ClusterPolicy
+# metadata:
+#   name: disallow-public-rds
+# spec:
+#   validationFailureAction: {{ .Values.validationFailureAction | default "Enforce" }}
+#   background: true
+#   rules:
+#     {{- if .Values.policy.enforcePublicAccess }}
+#     - name: disallow-public-rds-public-access
+#       match:
+#         resources:
+#           kinds:
+#             - database.aws.crossplane.io/v1beta1/RDSInstance
+#       validate:
+#         message: "RDS instances must not be publicly accessible."
+#         pattern:
+#           spec:
+#             forProvider:
+#               publiclyAccessible: false
+#     {{- end }}
+
+#     {{- if .Values.policy.enforceDeletionProtection }}
+#     - name: disallow-rds-without-deletion-protection
+#       match:
+#         resources:
+#           kinds:
+#             - database.aws.crossplane.io/v1beta1/RDSInstance
+#       validate:
+#         message: "RDS instances must have deletion protection enabled."
+#         pattern:
+#           spec:
+#             forProvider:
+#               deletionProtection: true
+#     {{- end }}
+# {{- end }}

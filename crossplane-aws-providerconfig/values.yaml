@@ -3,17 +3,21 @@ global:
   targetNamespace: ""
 
 providerConfig:
-  name: aws
-  annotations:
-    # If you will use ArgoCD dependsOn across apps, you can keep this empty or "0".
-    # If you prefer waves *within the same app*, set something > provider wave.
-    syncWave: "0"
-
-  # Helpful in Argo to bypass dry-run before the CRD exists
-  skipDryRunOnMissingCRD: true
-
   credentials:
-    # Precedence: this value > global.targetNamespace > .Release.Namespace
-    secretNamespace: ""
-    secretName: aws-secret
-    secretKey: creds
+    source: InjectedIdentity
+
+# providerConfig:
+#   name: aws
+#   annotations:
+#     # If you will use ArgoCD dependsOn across apps, you can keep this empty or "0".
+#     # If you prefer waves *within the same app*, set something > provider wave.
+#     syncWave: "0"
+
+#   # Helpful in Argo to bypass dry-run before the CRD exists
+#   skipDryRunOnMissingCRD: true
+
+#   credentials:
+#     # Precedence: this value > global.targetNamespace > .Release.Namespace
+#     secretNamespace: ""
+#     secretName: aws-secret
+#     secretKey: creds

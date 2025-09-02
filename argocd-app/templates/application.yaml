@@ -1,5 +1,5 @@
 {{- /*
-Minimal Argo CD Application generator.
+Upgraded Argo CD Application generator with resource cleanup.
 */ -}}
 {{- $d := .Values.defaults -}}
 {{- range $i, $app := .Values.apps }}
@@ -11,6 +11,11 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: {{ $.Release.Name }}
+  annotations:
+    # Ensures resources created by this Application are deleted when the Application is deleted
+    argocd.argoproj.io/finalizer: resources-finalizer.argocd.argoproj.io
+    # Optional: ensures resources are pruned in the correct order (CRDs last)
+    argocd.argoproj.io/sync-options: PruneLast=true
 spec:
   project: {{ $d.project | default "default" }}
   source:
@@ -26,7 +31,7 @@ spec:
     helm:
       releaseName: {{ default $app.name $app.releaseName | quote }}
 
-      {{- /* valueFiles logic (unchanged) */ -}}
+      {{- /* valueFiles logic */ -}}
       {{- $files := list -}}
       {{- if $app.valuesFiles }}{{- $files = $app.valuesFiles -}}{{- end -}}
       {{- if and (not $app.valuesFiles) $app.valuesFile }}{{- $files = list $app.valuesFile -}}{{- end -}}
@@ -36,7 +41,7 @@ spec:
       {{- toYaml $files | nindent 6 }}
       {{- end }}
 
-      {{- /* NEW: inline values map per app */ -}}
+      {{- /* inline values */ -}}
       {{- if $app.values }}
       values: |
         {{- toYaml $app.values | nindent 8 }}
@@ -46,9 +51,9 @@ spec:
     server: {{ $d.destinationServer | default "https://kubernetes.default.svc" | quote }}
     namespace: {{ required "apps[].namespace (destination) is required" $app.namespace | quote }}
   syncPolicy:
-    automated: {}
-    prune: true
-    selfHeal: true
+    automated:
+      prune: true
+      selfHeal: true
   revisionHistoryLimit: {{ $d.revisionHistoryLimit | default 5 }}
 ---
 {{- end }}
