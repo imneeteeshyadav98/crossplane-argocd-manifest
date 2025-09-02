@@ -9,10 +9,10 @@ nginx:
     type: ClusterIP
     port: 80
   resources: {}
-  
+
 rds:
   enabled: true
-  providerConfigRefName: aws
+  # providerConfigRefName: aws
   forProvider:
     allocatedStorage: 20
     autoMinorVersionUpgrade: true
