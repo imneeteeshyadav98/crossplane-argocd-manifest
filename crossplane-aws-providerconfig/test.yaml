@@ -1,0 +1,41 @@
+[?1049h[22;0;0t[>4;2m[?1h=[?2004h[1;60r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[60;1H"/tmp/kubectl-edit-235366248.yaml" 151 lines, 4579 bytes[1;1H# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: "2025-09-01T06:20:29Z"
+  generation: 1
+  name: provider-aws-707c08454566
+  namespace: crossplane-system
+  ownerReferences:
+  - apiVersion: pkg.crossplane.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ProviderRevision
+    name: provider-aws-707c08454566
+    uid: 802d0fa7-c783-4c8d-90f8-d95f4db4acb3
+  resourceVersion: "513497"
+  uid: 5fec52d5-2a2c-4203-bf73-ff4b32162a82
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:[29;7Hpkg.crossplane.io/provider: provider-aws[30;7Hpkg.crossplane.io/revision: provider-aws-707c08454566
+  strategy:
+    rollingUpdate:[33;7HmaxSurge: 25%[34;7HmaxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:[38;7Hannotations:[39;9Hprometheus.io/path: /metrics[40;9Hprometheus.io/port: "8080"[41;9Hprometheus.io/scrape: "true"[42;7HcreationTimestamp: null[43;7Hlabels:[44;9Hpkg.crossplane.io/provider: provider-aws[45;9Hpkg.crossplane.io/revision: provider-aws-707c08454566
+    spec:[47;7Hcontainers:[48;7H- env:[49;9H- name: TLS_CLIENT_CERTS_DIR[50;11Hvalue: /tls/client[51;9H- name: TLS_SERVER_CERTS_DIR[52;11Hvalue: /tls/server[53;9H- name: POD_NAMESPACE[54;11HvalueFrom:[55;13HfieldRef:[56;15HapiVersion: v1[57;15HfieldPath: metadata.namespace[58;9H- name: PROVIDER_NAME[59;11HvalueFrom:[1;1H[?25h[?25l[60;1HType  :qa  and press <Enter> to exit Vim[60;41H[K[1;1H[?25h[?25l[?25h[?25l[?25h[?25l[?25h[?25l[?25h[?25l[?25h[?25l[?25h[?25l[?25h
+
+
+
+
+[60;1H[?2004l[>4;m[?2004l[?1l>[>4;m[?1049l[23;0;0tVim: Error reading input, exiting...
+Vim: Finished.
+[60;1H[23;2t[23;1t[J
