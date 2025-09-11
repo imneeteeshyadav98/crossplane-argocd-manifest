@@ -1,0 +1,27 @@
+{{- if .Values.eksPolicy.enabled }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-public-eks
+spec:
+  validationFailureAction: {{ .Values.eksPolicy.validationFailureAction | default "Enforce" }}
+  background: true
+  rules:
+    - name: validate-eks-endpoints
+      match:
+        resources:
+          kinds:
+            - eks.aws.crossplane.io/v1beta1/Cluster
+      validate:
+        message: "{{ .Values.eksPolicy.message }}"
+        pattern:
+          spec:
+            forProvider:
+              resourcesVpcConfig:
+                {{- if .Values.eksPolicy.enforcePrivateAccess }}
+                endpointPrivateAccess: true
+                {{- end }}
+                {{- if .Values.eksPolicy.enforcePublicAccess }}
+                endpointPublicAccess: false
+                {{- end }}
+{{- end }}

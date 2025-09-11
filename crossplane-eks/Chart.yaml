@@ -1,0 +1,6 @@
+apiVersion: v2
+name: crossplane-eks
+description: Helm chart for Crossplane EKS Cluster + NodeGroup + Kyverno Guardrails
+type: application
+version: 0.1.0
+appVersion: "1.0"

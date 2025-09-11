@@ -1,0 +1,22 @@
+✅ Crossplane EKS Cluster + NodeGroup + Kyverno Guardrails installed
+
+Cluster:
+  Name: {{ .Values.cluster.name }}
+  Created: {{ .Values.cluster.createCluster }}
+
+NodeGroup:
+  Name: {{ .Values.nodeGroup.name }}
+  Created: {{ .Values.nodeGroup.createNodeGroup }}
+
+Kyverno Policy:
+  Enabled: {{ .Values.eksPolicy.enabled }}
+  Enforcement: {{ .Values.eksPolicy.validationFailureAction }}
+
+RBAC:
+  ServiceAccount: {{ .Values.kyverno.serviceAccount }}
+  Namespace: {{ .Values.kyverno.namespace }}
+
+Verify:
+  kubectl get clusters.eks.aws.crossplane.io
+  kubectl get nodegroups.eks.aws.crossplane.io
+  kubectl get clusterpolicy disallow-public-eks

@@ -1,0 +1,30 @@
+{{- if and .Values.nodeGroup.createNodeGroup .Values.cluster.createCluster }}
+apiVersion: eks.aws.crossplane.io/v1alpha1
+kind: NodeGroup
+metadata:
+  name: {{ .Values.nodeGroup.name }}
+  labels:
+    imported: "true"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  forProvider:
+    clusterNameRef:
+      name: {{ .Values.nodeGroup.clusterNameRef }}
+    nodeRole: {{ .Values.nodeGroup.nodeRole }}
+    region: {{ .Values.nodeGroup.region }}
+    scalingConfig:
+      desiredSize: {{ .Values.nodeGroup.scalingConfig.desiredSize }}
+      maxSize: {{ .Values.nodeGroup.scalingConfig.maxSize }}
+      minSize: {{ .Values.nodeGroup.scalingConfig.minSize }}
+    subnetRefs:
+{{- range .Values.nodeGroup.subnetRefs }}
+      - name: {{ . | quote }}
+{{- end }}
+    updateConfig:
+      maxUnavailablePercentage: {{ .Values.nodeGroup.updateConfig.maxUnavailablePercentage }}
+  providerConfigRef:
+    name: {{ .Values.providerConfig.name }}
+{{- end }}

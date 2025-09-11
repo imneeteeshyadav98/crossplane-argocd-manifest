@@ -1,0 +1,46 @@
+cluster:
+  createCluster: true
+  name: devopsofworld-dev-myeks-test
+  region: us-east-1
+  version: "1.33"
+  roleArn: arn:aws:iam::154089675366:role/eks-cluster-role
+  securityGroupIds: []
+  subnetIds:
+    - subnet-081710aecc693fbec
+    - subnet-01b01a912715bad02
+    - subnet-0b4d14cf149f80d95
+  connectionSecret:
+    name: devopsofworld-dev-myeks-conn
+    namespace: default
+
+nodeGroup:
+  createNodeGroup: false
+  name: mynodegroup-test
+  clusterNameRef: devopsofworld-dev-myeks-test
+  nodeRole: arn:aws:iam::154089675366:role/devopsofworld-dev-eks-node-role
+  region: us-east-1
+  scalingConfig:
+    desiredSize: 2
+    maxSize: 2
+    minSize: 1
+  subnetRefs:
+    - devopsofworld-dev-private-subnet-0
+    - devopsofworld-dev-private-subnet-2
+  updateConfig:
+    maxUnavailablePercentage: 50
+
+providerConfig:
+  name: aws
+
+kyverno:
+  enabled: false       # <--- toggle RBAC creation
+  serviceAccount: kyverno
+  namespace: kyverno
+
+
+eksPolicy:
+  enabled: false
+  validationFailureAction: Enforce
+  message: "EKS clusters must not allow public endpoint access."
+  enforcePublicAccess: true   # if true -> endpointPublicAccess must be false
+  enforcePrivateAccess: true  # if true -> endpointPrivateAccess must be true
