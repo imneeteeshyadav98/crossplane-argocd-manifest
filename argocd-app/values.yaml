@@ -24,10 +24,10 @@ apps:
   #   path: "kyverno"
   #   valuesFile: "values.yaml"
   #   namespace: "kyverno"
-  - name: crossplane-eks
-    path: "crossplane-eks"
-    valuesFile: "values.yaml"
-    namespace: "crossplane-system"
+  # - name: crossplane-eks
+  #   path: "crossplane-eks"
+  #   valuesFile: "values.yaml"
+  #   namespace: "crossplane-system"
 
 
     
