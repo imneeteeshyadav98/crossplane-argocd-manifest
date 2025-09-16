@@ -1,4 +1,3 @@
-# rds-guard/values.yaml
 nginx:
   replicaCount: 2
   image:
@@ -16,19 +15,19 @@ rds:
   forProvider:
     allocatedStorage: 20
     autoMinorVersionUpgrade: true
-    backupRetentionPeriod: 0
+    backupRetentionPeriod: 0             # ❌ Will be blocked by policy
     caCertificateIdentifier: rds-ca-rsa2048-g1
     dbInstanceClass: db.r5.large
-    deletionProtection: false
+    deletionProtection: false            # ❌ Will be blocked
     enableIAMDatabaseAuthentication: false
     engine: mysql
-    engineVersion: "8.0.42"
+    engineVersion: "8.0.42"              # ✅ Allowed (can be enforced)
     masterUsername: admin
     multiAZ: true
     port: 3306
-    publiclyAccessible: true
+    publiclyAccessible: true             # ❌ Will be blocked
     region: us-east-1
-    storageEncrypted: false
+    storageEncrypted: false              # ❌ Will be blocked
     storageType: gp2
 
 validationFailureAction: Enforce
@@ -39,6 +38,12 @@ kyverno:
 
 policy:
   enabled: true
-  message: "RDS instances must not be publicly accessible and must have deletion protection enabled."
+  message: "RDS security policy requirement not met."
   enforcePublicAccess: true
   enforceDeletionProtection: true
+  enforceEncryption: true
+  enforceBackupRetention: true
+  minBackupRetention: 7
+  enforceEngine: true
+  allowedEngine: mysql
+  allowedEngineVersion: "8.0.*"

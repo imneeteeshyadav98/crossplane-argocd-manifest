@@ -1,14 +1,14 @@
 cluster:
   createCluster: true
-  name: devopsofworld-dev-myeks-test
+  name: devopsofworld-dev-myeks-0001
   region: us-east-1
   version: "1.33"
-  roleArn: arn:aws:iam::154089675366:role/eks-cluster-role
+  roleArn: arn:aws:iam::278626298712:role/eks-cluster-role
   securityGroupIds: []
   subnetIds:
-    - subnet-081710aecc693fbec
-    - subnet-01b01a912715bad02
-    - subnet-0b4d14cf149f80d95
+    - subnet-0f988bff42ddf01ff
+    - subnet-086041854d651165f
+    - subnet-0fca0a8ef7116e19a
   connectionSecret:
     name: devopsofworld-dev-myeks-conn
     namespace: default

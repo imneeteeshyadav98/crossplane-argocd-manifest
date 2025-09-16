@@ -1,14 +1,5 @@
 {{- if .Values.rds.enabled }}
-{{- /* Resolve namespace with sensible fallbacks */ -}}
 {{- $ns := default .Release.Namespace .Values.rds.namespace -}}
-
-{{- if .Values.apps }}
-  {{- range .Values.apps }}
-    {{- if eq .name $.Release.Name }}
-      {{- $ns = .namespace }}
-    {{- end }}
-  {{- end }}
-{{- end }}
 
 apiVersion: database.aws.crossplane.io/v1beta1
 kind: RDSInstance
@@ -16,9 +7,9 @@ metadata:
   name: {{ default .Release.Name .Values.rds.name }}
   namespace: {{ $ns }}
   annotations:
-    # Put RDS after ProviderConfig to avoid creds timing issues in Argo CD
     argocd.argoproj.io/sync-wave: "2"
 spec:
+  deletionPolicy: {{ .Values.rds.deletionPolicy | default "Orphan" }}
   forProvider:
     allocatedStorage: {{ .Values.rds.forProvider.allocatedStorage }}
     autoMinorVersionUpgrade: {{ .Values.rds.forProvider.autoMinorVersionUpgrade }}
@@ -36,6 +27,13 @@ spec:
     region: {{ .Values.rds.forProvider.region | quote }}
     storageEncrypted: {{ .Values.rds.forProvider.storageEncrypted }}
     storageType: {{ .Values.rds.forProvider.storageType | quote }}
+    kmsKeyId: {{ .Values.rds.forProvider.kmsKeyId | default "" | quote }}
+    dbSubnetGroupName: {{ .Values.rds.forProvider.dbSubnetGroupName | quote }}
+    vpcSecurityGroupIds:
+      {{- toYaml .Values.rds.forProvider.vpcSecurityGroupIds | nindent 6 }}
   providerConfigRef:
     name: {{ .Values.rds.providerConfigRefName | default "aws" | quote }}
+  writeConnectionSecretToRef:
+    name: {{ .Values.rds.connectionSecretName | default (printf "%s-db-secret" .Release.Name) }}
+    namespace: {{ $ns }}
 {{- end }}

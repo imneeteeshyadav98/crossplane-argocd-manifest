@@ -1,0 +1,15 @@
+{{- range .Values.subnets }}
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Subnet
+metadata:
+  name: {{ .name | quote }}
+  annotations:
+    crossplane.io/external-name: {{ .externalName | quote }}
+spec:
+  forProvider:
+    region: {{ .region | quote }}
+    cidrBlock: {{ .cidrBlock | quote }}
+  providerConfigRef:
+    name: {{ $.Values.providerConfigRef.name | quote }}
+---
+{{- end }}

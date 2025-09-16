@@ -1,87 +1,80 @@
-# apiVersion: kyverno.io/v1
-# kind: ClusterPolicy
-# metadata:
-#   name: disallow-public-rds
-# spec:
-#   validationFailureAction: Enforce   # "audit" if you want just warnings
-#   background: true
-#   rules:
-#     - name: validate-public-rds
-#       match:
-#         resources:
-#           kinds:
-#             - database.aws.crossplane.io/v1beta1/RDSInstance
-#       validate:
-#         message: "prequirement not met:" 
-#         pattern:
-#           spec:
-#             forProvider:
-#               publiclyAccessible: true
-#               deletionProtection: false
-
-
 {{- if .Values.policy.enabled }}
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: disallow-public-rds
+  name: rds-security-policies
 spec:
   validationFailureAction: {{ .Values.validationFailureAction | default "Enforce" }}
   background: true
   rules:
-    - name: validate-public-rds
+    {{- if .Values.policy.enforcePublicAccess }}
+    - name: disallow-public-rds
       match:
         resources:
           kinds:
             - database.aws.crossplane.io/v1beta1/RDSInstance
       validate:
-        message: "{{ .Values.policy.message }}"
+        message: "RDS instances must not be publicly accessible."
         pattern:
           spec:
             forProvider:
-              {{- if .Values.policy.enforcePublicAccess }}
               publiclyAccessible: false
-              {{- end }}
-              {{- if .Values.policy.enforceDeletionProtection }}
+    {{- end }}
+
+    {{- if .Values.policy.enforceDeletionProtection }}
+    - name: enforce-rds-deletion-protection
+      match:
+        resources:
+          kinds:
+            - database.aws.crossplane.io/v1beta1/RDSInstance
+      validate:
+        message: "RDS instances must have deletion protection enabled."
+        pattern:
+          spec:
+            forProvider:
               deletionProtection: true
-              {{- end }}
+    {{- end }}
+
+    {{- if .Values.policy.enforceEncryption }}
+    - name: enforce-rds-encryption
+      match:
+        resources:
+          kinds:
+            - database.aws.crossplane.io/v1beta1/RDSInstance
+      validate:
+        message: "RDS instances must use storage encryption."
+        pattern:
+          spec:
+            forProvider:
+              storageEncrypted: true
+    {{- end }}
+
+    {{- if .Values.policy.enforceBackupRetention }}
+    - name: enforce-backup-retention
+      match:
+        resources:
+          kinds:
+            - database.aws.crossplane.io/v1beta1/RDSInstance
+      validate:
+        message: "RDS instances must retain backups for at least {{ .Values.policy.minBackupRetention }} days."
+        pattern:
+          spec:
+            forProvider:
+              backupRetentionPeriod: ">{{ .Values.policy.minBackupRetention | default 7 }}"
+    {{- end }}
+
+    {{- if .Values.policy.enforceEngine }}
+    - name: enforce-approved-engine
+      match:
+        resources:
+          kinds:
+            - database.aws.crossplane.io/v1beta1/RDSInstance
+      validate:
+        message: "Only engine {{ .Values.policy.allowedEngine }} with version {{ .Values.policy.allowedEngineVersion }} is allowed."
+        pattern:
+          spec:
+            forProvider:
+              engine: "{{ .Values.policy.allowedEngine | default "postgres" }}"
+              engineVersion: "{{ .Values.policy.allowedEngineVersion | default "14*" }}"
+    {{- end }}
 {{- end }}
-
-
-# {{- if .Values.policy.enabled }}
-# apiVersion: kyverno.io/v1
-# kind: ClusterPolicy
-# metadata:
-#   name: disallow-public-rds
-# spec:
-#   validationFailureAction: {{ .Values.validationFailureAction | default "Enforce" }}
-#   background: true
-#   rules:
-#     {{- if .Values.policy.enforcePublicAccess }}
-#     - name: disallow-public-rds-public-access
-#       match:
-#         resources:
-#           kinds:
-#             - database.aws.crossplane.io/v1beta1/RDSInstance
-#       validate:
-#         message: "RDS instances must not be publicly accessible."
-#         pattern:
-#           spec:
-#             forProvider:
-#               publiclyAccessible: false
-#     {{- end }}
-
-#     {{- if .Values.policy.enforceDeletionProtection }}
-#     - name: disallow-rds-without-deletion-protection
-#       match:
-#         resources:
-#           kinds:
-#             - database.aws.crossplane.io/v1beta1/RDSInstance
-#       validate:
-#         message: "RDS instances must have deletion protection enabled."
-#         pattern:
-#           spec:
-#             forProvider:
-#               deletionProtection: true
-#     {{- end }}
-# {{- end }}
