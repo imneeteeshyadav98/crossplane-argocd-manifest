@@ -11,7 +11,7 @@ spec:
 {{- end }}
 
 {{- if .Values.providers.gcp.enabled }}
-apiVersion: pkg.crossplane.io/v1alpha1
+apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: {{ .Values.providers.gcp.name }}
@@ -23,7 +23,7 @@ spec:
 {{- end }}
 
 {{- if .Values.providers.azure.enabled }}
-apiVersion: pkg.crossplane.io/v1alpha1
+apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: {{ .Values.providers.azure.name }}
