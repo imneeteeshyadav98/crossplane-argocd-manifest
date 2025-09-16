@@ -14,18 +14,19 @@ cluster:
     namespace: default
 
 nodeGroup:
-  createNodeGroup: false
+  createNodeGroup: true
   name: mynodegroup-test
   clusterNameRef: devopsofworld-dev-myeks-test
-  nodeRole: arn:aws:iam::154089675366:role/devopsofworld-dev-eks-node-role
+  nodeRole: arn:aws:iam::278626298712:role/devopsofworld-dev-eks-node-role
   region: us-east-1
   scalingConfig:
-    desiredSize: 2
-    maxSize: 2
+    desiredSize: 1
+    maxSize: 1
     minSize: 1
   subnetRefs:
     - devopsofworld-dev-private-subnet-0
     - devopsofworld-dev-private-subnet-2
+    - devopsofworld-dev-private-subnet-1
   updateConfig:
     maxUnavailablePercentage: 50
 
