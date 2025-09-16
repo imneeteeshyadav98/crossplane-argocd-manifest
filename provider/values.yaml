@@ -3,6 +3,16 @@
 # (i.e., .Release.Namespace in Helm).
 global:
   targetNamespace: ""
-provider:
-  name: provider-aws
-  package: xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2
+providers:
+  aws:
+    enabled: true
+    name: provider-aws
+    package: xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2
+  gcp:
+    enabled: true
+    name: provider-gcp
+    package: xpkg.upbound.io/crossplane-contrib/provider-gcp:v0.22.0
+  azure:
+    enabled: false
+    name: provider-azure
+    package: xpkg.upbound.io/crossplane-contrib/provider-azure:v0.20.1

@@ -1,9 +1,35 @@
+{{- if .Values.providers.aws.enabled }}
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: {{ .Values.provider.name }}
+  name: {{ .Values.providers.aws.name }}
   annotations:
-    # Ensure Provider applies before ProviderConfig in Argo CD
     argocd.argoproj.io/sync-wave: "0"
 spec:
-  package: {{ .Values.provider.package | quote }}
+  package: {{ .Values.providers.aws.package | quote }}
+---
+{{- end }}
+
+{{- if .Values.providers.gcp.enabled }}
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: Provider
+metadata:
+  name: {{ .Values.providers.gcp.name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  package: {{ .Values.providers.gcp.package | quote }}
+---
+{{- end }}
+
+{{- if .Values.providers.azure.enabled }}
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: Provider
+metadata:
+  name: {{ .Values.providers.azure.name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  package: {{ .Values.providers.azure.package | quote }}
+---
+{{- end }}
