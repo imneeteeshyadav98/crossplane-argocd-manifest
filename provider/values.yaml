@@ -9,7 +9,7 @@ providers:
     name: provider-aws
     package: xpkg.upbound.io/crossplane-contrib/provider-aws:v0.54.2
   gcp:
-    enabled: true
+    enabled: false
     name: provider-gcp
     package: xpkg.upbound.io/crossplane-contrib/provider-gcp:v0.22.0
   azure:
