@@ -3,16 +3,14 @@ providerConfigRef:
 
 subnets:
   - name: devopsofworld-dev-private-subnet-0
-    externalName: subnet-0b4d14cf149f80d95
+    externalName: subnet-0f988bff42ddf01ff
     region: us-east-1
-    cidrBlock: "10.0.2.0/24"
-
+    cidrBlock: "10.0.4.0/24"
   - name: devopsofworld-dev-private-subnet-1
-    externalName: subnet-01b01a912715bad02
+    externalName: subnet-0fca0a8ef7116e19a
     region: us-east-1
-    cidrBlock: "10.0.3.0/24"
-
+    cidrBlock: "10.0.5.0/24"
   - name: devopsofworld-dev-private-subnet-2
-    externalName: subnet-081710aecc693fbec
+    externalName: subnet-086041854d651165f
     region: us-east-1
     cidrBlock: "10.0.4.0/24"

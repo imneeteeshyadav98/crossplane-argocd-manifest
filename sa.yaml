@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::278626298712:role/crossplane-aws-role
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"eks.amazonaws.com/role-arn":"arn:aws:iam::278626298712:role/crossplane-aws-role"},"creationTimestamp":"2025-09-16T05:53:43Z","name":"provider-aws-707c08454566","namespace":"crossplane-system","ownerReferences":[{"apiVersion":"pkg.crossplane.io/v1","blockOwnerDeletion":true,"controller":true,"kind":"ProviderRevision","name":"provider-aws-707c08454566","uid":"de25a1ef-c548-47a8-9764-31013b441716"}],"resourceVersion":"12720","uid":"daa9edb9-7157-4b57-bb57-63cbb29fee34"}}
+  creationTimestamp: "2025-09-16T05:53:43Z"
+  name: provider-aws-707c08454566
+  namespace: crossplane-system
+  ownerReferences:
+  - apiVersion: pkg.crossplane.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ProviderRevision
+    name: provider-aws-707c08454566
+    uid: de25a1ef-c548-47a8-9764-31013b441716
+  resourceVersion: "24751"
+  uid: daa9edb9-7157-4b57-bb57-63cbb29fee34
