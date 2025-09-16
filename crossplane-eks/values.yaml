@@ -16,7 +16,7 @@ cluster:
 nodeGroup:
   createNodeGroup: true
   name: mynodegroup-test
-  clusterNameRef: devopsofworld-dev-myeks-test
+  clusterNameRef: devopsofworld-dev-myeks-0001
   nodeRole: arn:aws:iam::278626298712:role/devopsofworld-dev-eks-node-role
   region: us-east-1
   scalingConfig:
