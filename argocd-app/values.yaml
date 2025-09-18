@@ -16,10 +16,10 @@ apps:
     path: "crossplane-aws-providerconfig"
     valuesFile: "values.yaml"
     namespace: "crossplane-system"
-  # - name: rds-guard-new
-  #   path: "rds-guard"
-  #   valuesFile: "values.yaml"
-  #   namespace: "crossplane-system"
+  - name: rds-guard-new
+    path: "rds-guard"
+    valuesFile: "values.yaml"
+    namespace: "crossplane-system"
   # - name: kyverno
   #   path: "kyverno"
   #   valuesFile: "values.yaml"

@@ -25,7 +25,7 @@ rds:
     masterUsername: admin
     multiAZ: true
     port: 3306
-    publiclyAccessible: true             # ❌ Will be blocked
+    publiclyAccessible: false            # ❌ Will be blocked
     region: us-east-1
     storageEncrypted: false              # ❌ Will be blocked
     storageType: gp2
