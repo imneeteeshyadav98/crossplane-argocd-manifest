@@ -10,6 +10,8 @@ metadata:
     "helm.sh/hook-weight": "10"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
+  deletionPolicy: {{ .Values.nodeGroup.deletionPolicy | default "Orphan" }}       # ✅ prevents accidental deletion
+  managementPolicy: {{ .Values.nodeGroup.managementPolicy | default "FullControl" }} # ✅ can set ObserveOnly for imports
   forProvider:
     clusterNameRef:
       name: {{ .Values.nodeGroup.clusterNameRef }}

@@ -12,6 +12,8 @@ nginx:
 rds:
   enabled: true
   providerConfigRefName: aws
+  deletionPolicy: Orphan        # ✅ don’t delete DB on MR removal
+  managementPolicy: FullControl # ✅ Crossplane manages lifecycle
   forProvider:
     allocatedStorage: 20
     autoMinorVersionUpgrade: true

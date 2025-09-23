@@ -5,6 +5,8 @@ cluster:
   version: "1.33"
   roleArn: arn:aws:iam::278626298712:role/eks-cluster-role
   securityGroupIds: []
+  deletionPolicy: Orphan         # ✅ safer default
+  managementPolicy: FullControl  # or ObserveOnly if importing an existing EKS cluster
   subnetIds:
     - subnet-0f988bff42ddf01ff
     - subnet-086041854d651165f
@@ -19,6 +21,8 @@ nodeGroup:
   clusterNameRef: devopsofworld-dev-myeks-0001
   nodeRole: arn:aws:iam::278626298712:role/devopsofworld-dev-eks-node-role
   region: us-east-1
+  deletionPolicy: Orphan          # ✅ safer default
+  managementPolicy: FullControl   # or ObserveOnly if importing an existing NodeGroup
   scalingConfig:
     desiredSize: 1
     maxSize: 1

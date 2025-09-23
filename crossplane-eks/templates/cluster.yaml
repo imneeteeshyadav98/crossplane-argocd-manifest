@@ -4,6 +4,8 @@ kind: Cluster
 metadata:
   name: {{ .Values.cluster.name }}
 spec:
+  deletionPolicy: {{ .Values.cluster.deletionPolicy | default "Orphan" }}       # ✅ Prevents accidental deletion
+  managementPolicy: {{ .Values.cluster.managementPolicy | default "FullControl" }} # ✅ Can be ObserveOnly if referencing existing EKS
   forProvider:
     region: {{ .Values.cluster.region }}
     version: {{ .Values.cluster.version | quote }}

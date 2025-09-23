@@ -10,6 +10,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "2"
 spec:
   deletionPolicy: {{ .Values.rds.deletionPolicy | default "Orphan" }}
+  managementPolicy: {{ .Values.rds.managementPolicy | default "FullControl" }}
   forProvider:
     allocatedStorage: {{ .Values.rds.forProvider.allocatedStorage }}
     autoMinorVersionUpgrade: {{ .Values.rds.forProvider.autoMinorVersionUpgrade }}

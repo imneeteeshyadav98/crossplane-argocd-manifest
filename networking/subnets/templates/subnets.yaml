@@ -6,6 +6,8 @@ metadata:
   annotations:
     crossplane.io/external-name: {{ .externalName | quote }}
 spec:
+  deletionPolicy: {{ default "Orphan" .deletionPolicy | quote }}       # from values.yaml
+  managementPolicy: {{ default "ObserveOnly" .managementPolicy | quote }}
   forProvider:
     region: {{ .region | quote }}
     cidrBlock: {{ .cidrBlock | quote }}
